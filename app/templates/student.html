@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Student Test</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+  <body class="student-page">
+    <div class="container">
+      <h1>Persoonlijkheidstest</h1>
+
+      <div id="start-screen" class="card">
+        <label for="studentNumber">Voer je studentnummer in:</label>
+        <input type="text" id="studentNumber" placeholder="Bijv. 2464483" />
+        <button onclick="startTest()">Start</button>
+        <p id="error" class="error-text"></p>
+      </div>
+
+      <div id="question-screen" class="card" style="display: none">
+        <p id="progress" class="progress-text"></p>
+        <p id="statement-number" class="statement-label">
+          Stelling <span id="number"></span>:
+        </p>
+        <p id="statement-text" class="statement-text"></p>
+
+        <div class="choices">
+          <button onclick="submitAnswer(1)" id="choice1">Keuze 1</button>
+          <button onclick="submitAnswer(2)" id="choice2">Keuze 2</button>
+        </div>
+
+        <p id="info" class="info-text"></p>
+      </div>
+
+      <div id="completion-screen" class="card" style="display: none">
+        <h2>✅ Bedankt voor het invullen!</h2>
+        <p>
+          Je hebt alle stellingen beantwoord. Je kunt dit scherm nu sluiten.
+        </p>
+        <button onclick="restartTest()">Begin opnieuw</button>
+      </div>
+    </div>
+
+    <script>
+      let studentNumber = "";
+      let currentStatement = null;
+
+      function showStatement() {
+        const current = currentStatement.statement_number;
+        const total = 20;
+
+        document.getElementById(
+          "progress"
+        ).textContent = `Stelling ${current} van ${total}`;
+
+        document.getElementById("statement-text").textContent =
+          "Kies een van de volgende opties:";
+
+        document.getElementById("choice1").textContent =
+          currentStatement.statement_choices[0].choice_text;
+        document.getElementById("choice2").textContent =
+          currentStatement.statement_choices[1].choice_text;
+      }
+
+      async function startTest() {
+        studentNumber = document.getElementById("studentNumber").value.trim();
+        document.getElementById("error").textContent = "";
+
+        try {
+          const response = await fetch(
+            `/api/student/${studentNumber}/statement`
+          );
+
+          if (!response.ok) {
+            document.getElementById("error").textContent =
+              "Student niet gevonden.";
+            return;
+          }
+
+          const data = await response.json();
+
+          if (!data.statement_choices || data.statement_choices.length === 0) {
+            document.getElementById("start-screen").style.display = "none";
+            document.getElementById("completion-screen").style.display =
+              "block";
+            return;
+          }
+
+          currentStatement = data;
+
+          document.getElementById("start-screen").style.display = "none";
+          const questionScreen = document.getElementById("question-screen");
+          questionScreen.style.display = "block";
+          questionScreen.classList.remove("show"); // Reset it first
+          setTimeout(() => {
+            questionScreen.classList.add("show");
+          }, 50);
+
+          showStatement();
+        } catch (error) {
+          document.getElementById("error").textContent =
+            "Er ging iets mis. Probeer opnieuw.";
+          console.error(error);
+        }
+      }
+
+      async function submitAnswer(choiceNumber) {
+        const choice1 = document.getElementById("choice1");
+        const choice2 = document.getElementById("choice2");
+
+        choice1.disabled = true;
+        choice2.disabled = true;
+
+        try {
+          const res = await fetch(`/api/student/${studentNumber}/answer`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              statement_number: currentStatement.statement_number,
+              choice_number: choiceNumber,
+            }),
+          });
+
+          if (res.status === 409) {
+            console.log(
+              "Stelling was al beantwoord, ga verder naar de volgende."
+            );
+          }
+
+          const next = await fetch(`/api/student/${studentNumber}/statement`);
+          const data = await next.json();
+
+          if (!data.statement_number) {
+            const questionScreen = document.getElementById("question-screen");
+            const completionScreen =
+              document.getElementById("completion-screen");
+
+            questionScreen.classList.remove("show");
+            setTimeout(() => {
+              questionScreen.style.display = "none";
+              completionScreen.style.display = "block";
+              setTimeout(() => {
+                completionScreen.classList.add("show");
+              }, 50);
+            }, 200);
+
+            return;
+          }
+
+          currentStatement = data;
+          showStatement();
+        } catch (err) {
+          console.error("Er ging iets mis:", err);
+        } finally {
+          choice1.disabled = false;
+          choice2.disabled = false;
+        }
+      }
+
+      function restartTest() {
+        window.location.reload();
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Student Detail</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+  <body class="teacher-page">
+    <div class="container">
+      <h1>Student: {{ student.name }} ({{ student.student_number }})</h1>
+      <p><strong>Klas:</strong> {{ student.student_class }}</p>
+      <p><strong>Team:</strong> {{ student.team or "—" }}</p>
+      <p></p>
+      <p>
+        <strong>Voltooid:</strong>
+        {% if completed %}
+        <span class="completed">✓</span>
+        {% else %}
+        <span class="incomplete">✗</span>
+        {% endif %}
+      </p>
+      <h2>Studentgegevens bewerken</h2>
+      <form
+        method="POST"
+        class="edit-form"
+        action="{{ url_for('admin.update_student', student_number=student.student_number) }}"
+      >
+        <label for="student_class">Klas:</label>
+        <input
+          type="text"
+          name="student_class"
+          value="{{ student.student_class or '' }}"
+          required
+        /><br /><br />
+
+        <label for="team">Team:</label>
+        <input
+          type="text"
+          name="team"
+          value="{{ student.team or '' }}"
+        /><br /><br />
+
+        <button type="submit">Opslaan</button>
+      </form>
+      <h2>Antwoorden</h2>
+      <table class="answers-table">
+        <thead>
+          <tr>
+            <th>Stelling</th>
+            <th>Keuze</th>
+            <th>Resultaat</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for answer in answers %}
+          <tr>
+            <td>{{ answer.statement_number }}</td>
+            <td>
+              {{ statements[answer.statement_number].choice_1 if
+              answer.choice_number == 1 else
+              statements[answer.statement_number].choice_2 }}
+            </td>
+            <td>{{ 'Actie' if answer.choice_number == 1 else 'Reflectie' }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <br />
+      <a href="{{ url_for('admin.dashboard') }}">← Terug naar overzicht</a>
+    </div>
+  </body>
+</html>

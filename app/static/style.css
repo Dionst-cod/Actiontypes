@@ -1,0 +1,260 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 20px;
+}
+
+.container {
+  max-width: 1000px;  
+  margin: 40px auto;
+  background: white;
+  padding: 60px;
+  border-radius: 12px;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.1);
+}
+
+.card {
+  margin-top: 30px;
+}
+
+
+h1 {
+  text-align: center;
+  font-size: 36px;
+  margin-bottom: 40px;
+  color: #222;
+}
+
+label, .statement-label, .statement-text, .progress-text {
+  font-size: 20px;
+}
+
+input[type="text"] {
+  font-size: 18px;
+  padding: 12px;
+}
+
+button {
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+button:hover {
+  transform: scale(1.02);
+}
+
+.statement-label {
+  font-size: 16px;
+  color: #444;
+  margin-bottom: 5px;
+}
+
+.statement-text {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.choices {
+  margin-top: 30px;
+  gap: 16px;
+}
+
+.choices button {
+  font-size: 20px;
+  padding: 16px;
+  width: 100%;
+  border-radius: 8px;
+}
+
+.error-text {
+  color: red;
+}
+
+.info-text {
+  color: green;
+  margin-top: 10px;
+}
+
+#question-screen {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+#question-screen.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.progress-text {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 8px;
+}
+
+button:active {
+  transform: scale(0.97);
+}
+
+#completion-screen h2 {
+  text-align: center;
+  color: green;
+  font-size: 24px;
+}
+
+#completion-screen p {
+  text-align: center;
+  font-size: 18px;
+}
+
+#start-screen button,
+#completion-screen button {
+  font-size: 20px;
+  padding: 14px 24px;
+  border-radius: 8px;
+  background-color: #2e7d32;
+  color: white;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  max-width: 300px;
+  margin: 20px auto 0;
+  display: block;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#start-screen button:hover,
+#completion-screen button:hover {
+  background-color: #1b5e20;
+}
+
+.status {
+  text-align: center;
+  font-size: 20px;
+}
+
+.completed {
+  color: green;
+  font-weight: bold;
+}
+
+.incomplete {
+  color: red;
+  font-weight: bold;
+}
+
+/* === TEACHER PAGE SCOPED TABLE STYLING === */
+.teacher-page table {
+  width: 95%;
+  margin: auto;
+  border-collapse: collapse;
+  background: white;
+  box-shadow: 0 0 15px rgba(0,0,0,0.1);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.teacher-page th, .teacher-page td {
+  border: 1px solid #ddd;
+  padding: 12px 15px;
+  text-align: left;
+  font-size: 14px;
+}
+
+.teacher-page th {
+  background-color: #1976d2;
+  color: white;
+}
+
+.teacher-page tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+th {
+  cursor: pointer;
+  position: relative;
+}
+
+th:hover {
+  background-color: #1565c0;
+}
+
+.reset-button {
+  background-color: #d32f2f;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+
+.reset-button:hover {
+  background-color: #b71c1c;
+}
+
+.edit-form {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.edit-form label {
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.edit-form input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #aaa;
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+.edit-form button {
+  margin-top: 15px;
+  padding: 12px 20px;
+  font-size: 16px;
+  border: none;
+  background-color: #1976d2;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  width: 150px;
+}
+
+.edit-form button:hover {
+  background-color: #0d47a1;
+}
+
+.answers-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.answers-table th,
+.answers-table td {
+  padding: 10px;
+  border: 1px solid #ccc;
+  text-align: left;
+}
+
+.answers-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.answers-table tr:hover {
+  background-color: #f1f1f1;
+}
+
+.answers-table td:nth-child(2) {
+  text-align: center;
+}

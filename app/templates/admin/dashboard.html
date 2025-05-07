@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Docentenoverzicht</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    </style>
+  </head>
+  <body class="teacher-page">
+    <h1>Studentenoverzicht</h1>
+    <div style="text-align: center; margin-bottom: 20px;">
+      <label for="classFilter"><strong>Filter op klas:</strong></label>
+      <select id="classFilter" onchange="filterByClass()">
+        <option value="all">Alle klassen</option>
+        {% for klas in unique_classes %}
+          <option value="{{ klas }}">{{ klas }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    
+    <table id="studentTable">
+      <thead>
+        <tr>
+          <th>Reset</th>
+          <th onclick="sortTable(0, this)">Naam</th>
+          <th onclick="sortTable(1, this)">Studentnummer</th>
+          <th onclick="sortTable(2, this)">Klas</th>
+          <th onclick="sortTable(3, this)">Team</th>
+          <th onclick="sortTable(4, this)">Antwoorden</th>
+          <th onclick="sortTable(5, this)">Voltooid?</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in students %}
+        <tr>
+          <td><button class="reset-button" onclick="resetAnswers('{{ s.student_number }}')">Reset</button></td>          
+          <td><a href="{{ url_for('admin.student_detail', student_number=s.student_number) }}">{{ s.name }}</a></td>
+          <td>{{ s.student_number }}</td>
+          <td>{{ s.student_class }}</td>
+          <td>{{ s.team }}</td>
+          <td>{{ s.answers }}</td>
+          <td class="status">
+            {% if s.completed %}
+              <span class="completed">✓</span>
+            {% else %}
+              <span class="incomplete">✗</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>      
+    </table>
+  </body>
+
+  <script>
+    function filterByClass() {
+      const selectedClass = document.getElementById("classFilter").value;
+      const rows = document.querySelectorAll("tbody tr");
+  
+      rows.forEach(row => {
+        const classCell = row.children[3].textContent; 
+        if (selectedClass === "all" || classCell === selectedClass) {
+          row.style.display = "";
+        } else {
+          row.style.display = "none";
+        }
+      });
+    }
+
+  let sortDirection = 1; 
+  let lastSortedColumn = null;
+
+
+  function sortTable(columnIndex, header) {
+    const table = document.getElementById("studentTable");
+    const rows = Array.from(table.rows).slice(1); 
+    const isNumeric = columnIndex === 1 || columnIndex === 4;
+
+    if (lastSortedColumn === columnIndex) {
+      sortDirection *= -1;
+    } else {
+      sortDirection = 1;
+      if (lastSortedColumn !== null) {
+        table.rows[0].cells[lastSortedColumn].textContent = 
+          table.rows[0].cells[lastSortedColumn].textContent.replace(/ ↑| ↓/, "");
+      }
+    }
+
+    header.textContent = header.textContent.replace(/ ↑| ↓/, "") + (sortDirection === 1 ? " ↑" : " ↓");
+    lastSortedColumn = columnIndex;
+
+    const sorted = rows.sort((a, b) => {
+      const A = a.cells[columnIndex].textContent.trim();
+      const B = b.cells[columnIndex].textContent.trim();
+
+      if (isNumeric) {
+        return (Number(A) - Number(B)) * sortDirection;
+      } else {
+        return A.localeCompare(B) * sortDirection;
+      }
+    });
+
+    const tbody = table.tBodies[0];
+    tbody.innerHTML = "";
+    sorted.forEach(row => tbody.appendChild(row));
+  }
+
+  async function resetAnswers(studentNumber) {
+    if (!confirm(`Weet je zeker dat je de antwoorden van student ${studentNumber} wilt verwijderen?`)) {
+      return;
+    }
+
+    try {
+      const res = await fetch(`/admin/reset/${studentNumber}`, {
+        method: 'POST'
+      });
+
+      if (res.ok) {
+        alert("Antwoorden gereset! Vernieuw de pagina om het resultaat te zien.");
+      } else {
+        alert("Er ging iets mis bij het resetten.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Fout bij het versturen van reset-verzoek.");
+    }
+  }
+  </script>
+</html>
