@@ -10,17 +10,33 @@
   </head>
   <body class="teacher-page">
     <h1>Studentenoverzicht</h1>
-    <div style="text-align: center; margin-bottom: 20px;">
-      <label for="classFilter"><strong>Filter op klas:</strong></label>
-      <select id="classFilter" onchange="filterByClass()">
-        <option value="all">Alle klassen</option>
-        {% for klas in unique_classes %}
-          <option value="{{ klas }}">{{ klas }}</option>
-        {% endfor %}
-      </select>
+    <div style="display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 20px;">
+      <div>
+        <label for="classFilter"><strong>Filter op klas:</strong></label>
+        <select id="classFilter" onchange="filterByClass()">
+          <option value="all">Alle klassen</option>
+          {% for klas in unique_classes %}
+            <option value="{{ klas }}">{{ klas }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div>
+        <label for="teamFilter"><strong>Filter op team:</strong></label>
+        <select id="teamFilter" onchange="filterByTeam()">
+          <option value="all">Alle teams</option>
+          {% for team in unique_teams %}
+            <option value="{{ team }}">{{ team }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div style="margin-top: 20px; text-align: right;">
+        <a href="{{ url_for('admin.export_students') }}" class="export-button">📥 Exporteren als CSV</a>
+      </div>    
     </div>
-    
-    <table id="studentTable">
+  
+    <table id="studentTable">  
       <thead>
         <tr>
           <th>Reset</th>
@@ -55,19 +71,40 @@
   </body>
 
   <script>
-    function filterByClass() {
-      const selectedClass = document.getElementById("classFilter").value;
-      const rows = document.querySelectorAll("tbody tr");
-  
-      rows.forEach(row => {
-        const classCell = row.children[3].textContent; 
-        if (selectedClass === "all" || classCell === selectedClass) {
-          row.style.display = "";
-        } else {
-          row.style.display = "none";
-        }
-      });
-    }
+  function filterByClass() {
+    const selectedClass = document.getElementById("classFilter").value;
+    const rows = document.querySelectorAll("tbody tr");
+
+    rows.forEach(row => {
+      const classCell = row.children[3].textContent; 
+      if (selectedClass === "all" || classCell === selectedClass) {
+        row.style.display = "";
+      } else {
+        row.style.display = "none";
+      }
+    });
+  }
+
+  function filterByClass() {
+    const selectedClass = document.getElementById("classFilter").value;
+    const rows = document.querySelectorAll("tbody tr");
+
+    rows.forEach(row => {
+      const classCell = row.children[3].textContent.trim();
+      const teamCell = row.children[4].textContent.trim();
+      const selectedTeam = document.getElementById("teamFilter").value;
+
+      const matchesClass = selectedClass === "all" || classCell === selectedClass;
+      const matchesTeam = selectedTeam === "all" || teamCell === selectedTeam;
+
+      row.style.display = (matchesClass && matchesTeam) ? "" : "none";
+    });
+  } 
+
+  function filterByTeam() {
+    filterByClass(); 
+  }
+
 
   let sortDirection = 1; 
   let lastSortedColumn = null;

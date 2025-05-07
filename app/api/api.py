@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify, request
 from app.models import Student, Statement, Answer
 from app import db
 from sqlalchemy import not_
+from datetime import datetime  
 
 bp = Blueprint('api', __name__, url_prefix='/api')
 
@@ -40,11 +41,9 @@ def submit_answer(student_number):
     statement_number = data.get('statement_number')
     choice_number = data.get('choice_number')
 
-    # Validate input
     if not statement_number or not choice_number:
         return {"error": "Missing statement_number or choice_number"}, 400
 
-    # Check if this answer already exists
     existing_answer = Answer.query.filter_by(
         student_number=student_number,
         statement_number=statement_number
@@ -53,13 +52,14 @@ def submit_answer(student_number):
     if existing_answer:
         return {"message": "Statement already answered."}, 409
 
-    # Save new answer
     answer = Answer(
         student_number=student_number,
         statement_number=statement_number,
-        choice_number=choice_number
+        choice_number=choice_number,
+        timestamp=datetime.utcnow()
     )
     db.session.add(answer)
     db.session.commit()
 
     return {"message": "✅ Answer saved!"}, 201
+
