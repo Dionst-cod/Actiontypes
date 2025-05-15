@@ -30,7 +30,10 @@
           <button onclick="submitAnswer(2)" id="choice2">Keuze 2</button>
         </div>
 
-        <p id="info" class="info-text"></p>
+        <p class="info-text">
+          Naam: <span id="student-name"></span> | Klas:
+          <span id="student-class"></span>
+        </p>
       </div>
 
       <div id="completion-screen" class="card" style="display: none">
@@ -73,12 +76,26 @@
           );
 
           if (!response.ok) {
-            document.getElementById("error").textContent =
-              "Student niet gevonden.";
+            const errorData = await response.json();
+
+            if (
+              response.status === 403 &&
+              errorData.error === "Test al voltooid"
+            ) {
+              document.getElementById("error").textContent =
+                "Je hebt deze test al ingevuld. Opnieuw invullen is niet mogelijk.";
+            } else {
+              document.getElementById("error").textContent =
+                "Student niet gevonden.";
+            }
+
             return;
           }
 
           const data = await response.json();
+
+          document.getElementById("student-name").textContent = data.name;
+          document.getElementById("student-class").textContent = data.class;
 
           if (!data.statement_choices || data.statement_choices.length === 0) {
             document.getElementById("start-screen").style.display = "none";
@@ -113,14 +130,16 @@
         choice2.disabled = true;
 
         try {
-          const res = await fetch(`/api/student/${studentNumber}/answer`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              statement_number: currentStatement.statement_number,
-              choice_number: choiceNumber,
-            }),
-          });
+          const res = await fetch(
+            `/api/student/${studentNumber}/statement/${currentStatement.statement_number}`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                statement_choice: choiceNumber,
+              }),
+            }
+          );
 
           if (res.status === 409) {
             console.log(

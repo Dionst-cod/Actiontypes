@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Docentenbeheer</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+  <body class="teacher-page">
+    <div class="container">
+      <h1>Docentenbeheer</h1>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Naam</th>
+            <th>Gebruikersnaam</th>
+            <th>Admin?</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for teacher in teachers %}
+          <tr>
+            <td>{{ teacher.name }}</td>
+            <td>{{ teacher.username }}</td>
+            <td>{{ "Ja" if teacher.is_admin else "Nee" }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <h2>Nieuwe docent toevoegen</h2>
+      <form method="POST" action="{{ url_for('admin.add_teacher') }}">
+        <label>Naam:</label><br />
+        <input type="text" name="name" required /><br /><br />
+
+        <label>Gebruikersnaam:</label><br />
+        <input type="text" name="username" required /><br /><br />
+
+        <label>Wachtwoord:</label><br />
+        <input type="password" name="password" required /><br /><br />
+
+        <label>
+          <input type="checkbox" name="is_admin" />
+          Admin rechten </label
+        ><br /><br />
+
+        <button type="submit">Toevoegen</button>
+      </form>
+    </div>
+  </body>
+</html>

@@ -25,6 +25,7 @@ class Statement(db.Model):
     statement_number = db.Column(db.Integer, nullable=False)
     choice_1_text = db.Column(db.String(255), nullable=False)
     choice_2_text = db.Column(db.String(255), nullable=False)
+    trait_type = db.Column(db.String(2), nullable=False)  # e.g., 'EI', 'SN', etc.
 
     def __repr__(self):
         return f"<Statement {self.statement_number}>"

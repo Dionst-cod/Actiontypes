@@ -9,6 +9,37 @@
     </style>
   </head>
   <body class="teacher-page">
+    <div style="text-align: right; margin-bottom: 10px;">
+      <a href="{{ url_for('admin.logout') }}" class="export-button" style="background-color: #dc3545;">Uitloggen</a>
+    </div>
+
+    <h2>Student toevoegen</h2>
+    
+    <div class="card" style="margin-bottom: 30px; padding: 20px;">
+      <h2 style="margin-top: 0;">➕ Student toevoegen</h2>
+      <form method="POST" action="{{ url_for('admin.add_student') }}" style="display: flex; align-items: flex-end; gap: 20px; flex-wrap: wrap;">
+        <div>
+          <label>Studentnummer:</label><br />
+          <input type="text" name="student_number" required />
+        </div>
+
+        <div>
+          <label>Naam:</label><br />
+          <input type="text" name="name" required />
+        </div>
+
+        <div>
+          <label>Klas:</label><br />
+          <input type="text" name="student_class" required />
+        </div>
+
+        <div>
+          <button type="submit" class="export-button">Opslaan</button>
+        </div>
+      </form>
+    </div>
+
+
     <h1>Studentenoverzicht</h1>
     <div style="display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 20px;">
       <div>
@@ -35,7 +66,7 @@
         <a href="{{ url_for('admin.export_students') }}" class="export-button">📥 Exporteren als CSV</a>
       </div>    
     </div>
-  
+
     <table id="studentTable">  
       <thead>
         <tr>
@@ -46,6 +77,7 @@
           <th onclick="sortTable(3, this)">Team</th>
           <th onclick="sortTable(4, this)">Antwoorden</th>
           <th onclick="sortTable(5, this)">Voltooid?</th>
+          <th onclick="sortTable(6, this)">Actiontype</th>
         </tr>
       </thead>
       <tbody>
@@ -64,6 +96,7 @@
               <span class="incomplete">✗</span>
             {% endif %}
           </td>
+          <td>{{ s.action_type or "—" }}</td>
         </tr>
         {% endfor %}
       </tbody>      
