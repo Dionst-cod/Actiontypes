@@ -13,7 +13,7 @@ Deze applicatie is gebouwd als onderdeel van Werkplaats 3 (WP3) voor de opleidin
 - Kunnen het formulier slechts één keer invullen
 - Actiontype wordt automatisch berekend (zoals INFP, ESTJ, enz.)
 
-## 🔑 Test Login Gegevens
+## Test Login Gegevens
 
 **Docent (admin):**
 
