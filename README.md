@@ -1,6 +1,4 @@
-# Actiontypes — Werkplaats 3 (Inhaalopdracht 2023/2024)
-
-Deze applicatie is gebouwd als onderdeel van Werkplaats 3 (WP3) voor de opleiding Software Development. De webapplicatie bepaalt het "action type" van studenten op basis van 20 stellingen, beheert studentgegevens en ondersteunt docenten bij het vormen van gebalanceerde teams.
+De webapplicatie bepaalt het "action type" van studenten op basis van 20 stellingen, beheert studentgegevens en ondersteunt docenten bij het vormen van gebalanceerde teams.
 
 ---
 
